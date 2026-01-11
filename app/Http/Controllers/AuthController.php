@@ -17,17 +17,10 @@ use Illuminate\Http\RedirectResponse;
 class AuthController
 {
     protected AuthService $authService;
-    protected LoginValidator $loginValidator;
-    protected PasswordChangeValidator $passwordChangeValidator;
 
-    public function __construct(
-        AuthService $authService,
-        LoginValidator $loginValidator,
-        PasswordChangeValidator $passwordChangeValidator
-    ) {
+    public function __construct(AuthService $authService)
+    {
         $this->authService = $authService;
-        $this->loginValidator = $loginValidator;
-        $this->passwordChangeValidator = $passwordChangeValidator;
     }
 
     /**
@@ -48,8 +41,11 @@ class AuthController
     public function login(LoginRequest $request): JsonResponse|RedirectResponse
     {
         try {
-            // Use validator for additional validation if needed
-            $credentials = $this->loginValidator->validate($request->validated());
+            // Get credentials directly from request
+            $credentials = [
+                'username' => $request->input('username'),
+                'password' => $request->input('password'),
+            ];
 
             $result = $this->authService->login($credentials);
 
@@ -82,7 +78,11 @@ class AuthController
                 ->withInput($request->only('username', 'email'));
 
         } catch (\Exception $e) {
-            Log::error('Login error: ' . $e->getMessage());
+            Log::error('Login error: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
 
             if ($request->expectsJson()) {
                 return response()->json([
@@ -92,7 +92,7 @@ class AuthController
             }
 
             return back()
-                ->withErrors(['login' => 'Error interno del servidor'])
+                ->withErrors(['login' => 'Error interno del servidor: ' . $e->getMessage()])
                 ->withInput($request->only('username', 'email'));
         }
     }
@@ -160,12 +160,16 @@ class AuthController
         }
 
         try {
-            // Use validator for additional validation if needed
-            $validatedData = $this->passwordChangeValidator->validate($request->validated());
+            // Get data directly from request
+            $data = [
+                'current_password' => $request->input('current_password'),
+                'new_password' => $request->input('new_password'),
+                'new_password_confirmation' => $request->input('new_password_confirmation'),
+            ];
 
             $result = $this->authService->changePassword(
                 Auth::user(),
-                $validatedData
+                $data
             );
 
             if ($result['success']) {
@@ -191,7 +195,10 @@ class AuthController
                 ->withInput();
 
         } catch (\Exception $e) {
-            Log::error('Change password error: ' . $e->getMessage());
+            Log::error('Change password error: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
 
             if ($request->expectsJson()) {
                 return response()->json([
