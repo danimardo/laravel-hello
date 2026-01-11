@@ -13,7 +13,7 @@ Route::get('/', function () {
 // Rutas de autenticación
 Route::middleware(['guest'])->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->middleware(['login.rate.limit']);
+    Route::post('/login', [AuthController::class, 'login']);
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])
