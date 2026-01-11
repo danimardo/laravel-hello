@@ -9,26 +9,22 @@
             <div
                 class="text-7xl font-bold text-secondary mb-8 transition-all duration-500 ease-in-out"
                 id="counterDisplay"
-                x-data="{ counterValue: {{ $counter }}, animate: false }"
-                x-init="
-                    $watch('counterValue', (newVal, oldVal) => {
-                        animate = true;
-                        if (newVal > oldVal) {
-                            counterDisplay.classList.add('scale-110', 'text-success');
-                        } else if (newVal < oldVal) {
-                            counterDisplay.classList.add('scale-90', 'text-error');
-                        } else {
-                            counterDisplay.classList.add('animate-spin');
-                        }
+                x-data
+                x-init="$watch('$wire.counter', (newVal, oldVal) => {
+                    if (newVal > oldVal) {
+                        counterDisplay.classList.add('scale-110', 'text-success');
+                    } else if (newVal < oldVal) {
+                        counterDisplay.classList.add('scale-90', 'text-error');
+                    } else {
+                        counterDisplay.classList.add('animate-spin');
+                    }
 
-                        setTimeout(() => {
-                            counterDisplay.classList.remove('scale-110', 'scale-90', 'text-success', 'text-error', 'animate-spin');
-                            animate = false;
-                        }, 300);
-                    });
-                "
+                    setTimeout(() => {
+                        counterDisplay.classList.remove('scale-110', 'scale-90', 'text-success', 'text-error', 'animate-spin');
+                    }, 300);
+                })"
             >
-                <span x-text="counterValue"></span>
+                <span x-text="$wire.counter"></span>
             </div>
 
             <!-- Action Buttons with Hover Effects -->
@@ -37,11 +33,11 @@
                 <button
                     wire:click="decrement"
                     class="btn btn-error btn-lg hover:scale-105 active:scale-95 transition-all duration-200"
-                    :class="{ 'btn-disabled opacity-50': $isLoading }"
-                    :disabled="$isLoading"
+                    :class="{ 'btn-disabled opacity-50': $wire.isLoading }"
+                    :disabled="$wire.isLoading"
                     title="Decrementar (-1)"
                 >
-                    @if($isLoading)
+                    @if($wire.isLoading)
                         <span class="loading loading-spinner loading-md"></span>
                     @else
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -54,11 +50,11 @@
                 <button
                     wire:click="resetCounter"
                     class="btn btn-warning btn-lg hover:scale-105 active:scale-95 transition-all duration-200"
-                    :class="{ 'btn-disabled opacity-50': $isLoading }"
-                    :disabled="$isLoading"
+                    :class="{ 'btn-disabled opacity-50': $wire.isLoading }"
+                    :disabled="$wire.isLoading"
                     title="Resetear a 0"
                 >
-                    @if($isLoading)
+                    @if($wire.isLoading)
                         <span class="loading loading-spinner loading-md"></span>
                     @else
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -71,11 +67,11 @@
                 <button
                     wire:click="increment"
                     class="btn btn-success btn-lg hover:scale-105 active:scale-95 transition-all duration-200"
-                    :class="{ 'btn-disabled opacity-50': $isLoading }"
-                    :disabled="$isLoading"
+                    :class="{ 'btn-disabled opacity-50': $wire.isLoading }"
+                    :disabled="$wire.isLoading"
                     title="Incrementar (+1)"
                 >
-                    @if($isLoading)
+                    @if($wire.isLoading)
                         <span class="loading loading-spinner loading-md"></span>
                     @else
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -90,48 +86,15 @@
                 <div class="flex items-center justify-center gap-2">
                     <span class="badge badge-xs"
                         :class="{
-                            'badge-success': counterValue > 0,
-                            'badge-error': counterValue < 0,
-                            'badge-warning': counterValue === 0
+                            'badge-success': $wire.counter > 0,
+                            'badge-error': $wire.counter < 0,
+                            'badge-warning': $wire.counter === 0
                         }"
-                        x-text="counterValue > 0 ? 'Positivo' : (counterValue < 0 ? 'Negativo' : 'Cero')"
+                        x-text="$wire.counter > 0 ? 'Positivo' : ($wire.counter < 0 ? 'Negativo' : 'Cero')"
                     ></span>
-                    <p>Valor actual: <strong x-text="counterValue"></strong></p>
+                    <p>Valor actual: <strong x-text="$wire.counter"></strong></p>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-    document.addEventListener('livewire:init', () => {
-        // Listen for counter updates
-        Livewire.on('counterUpdated', (data) => {
-            const display = document.getElementById('counterDisplay');
-            if (display) {
-                // Add animation class
-                display.classList.add('animate-bounce');
-                setTimeout(() => {
-                    display.classList.remove('animate-bounce');
-                }, 500);
-            }
-        });
-
-        // Add click animations to buttons
-        document.querySelectorAll('button[wire\\:click]').forEach(button => {
-            button.addEventListener('click', function() {
-                this.classList.add('animate-ping');
-                setTimeout(() => {
-                    this.classList.remove('animate-ping');
-                }, 300);
-            });
-        });
-    });
-
-    // Update counter display on Livewire updates
-    document.addEventListener('livewire:navigated', () => {
-        if (typeof Alpine !== 'undefined') {
-            Alpine.data('counterValue', {{ $counter }});
-        }
-    });
-</script>
