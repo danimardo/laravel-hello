@@ -1,0 +1,31 @@
+<?php
+
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
+
+return Application::configure(basePath: dirname(__DIR__))
+    ->withRouting(
+        web: __DIR__.'/../routes/web.php',
+        commands: __DIR__.'/../routes/console.php',
+        health: '/up',
+    )
+    ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->alias([
+            'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'login.rate.limit' => \App\Http\Middleware\LoginRateLimitMiddleware::class,
+            'session.timeout' => \App\Http\Middleware\SessionTimeoutMiddleware::class,
+            'security.headers' => \App\Http\Middleware\SecurityHeadersMiddleware::class,
+        ]);
+
+        $middleware->appendToGroup('web', [
+            \App\Http\Middleware\SecurityHeadersMiddleware::class,
+        ]);
+
+        $middleware->appendToGroup('auth', [
+            \App\Http\Middleware\SessionTimeoutMiddleware::class,
+        ]);
+    })
+    ->withExceptions(function (Exceptions $exceptions): void {
+        //
+    })->create();
