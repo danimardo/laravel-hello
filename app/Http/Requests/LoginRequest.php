@@ -64,10 +64,12 @@ class LoginRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        // Trim whitespace from inputs
-        $this->merge([
-            'username' => $this->username ? trim($this->username) : null,
-            'email' => $this->email ? trim($this->email) : null,
-        ]);
+        // Trim whitespace from inputs if they exist
+        if ($this->has('username')) {
+            $this->merge(['username' => trim($this->input('username'))]);
+        }
+        if ($this->has('email')) {
+            $this->merge(['email' => trim($this->input('email'))]);
+        }
     }
 }
