@@ -58,7 +58,7 @@ Route::post('/test-login', function (Illuminate\Http\Request $request) {
 // Rutas de autenticación
 Route::middleware(['guest'])->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login', [AuthController::class, 'login'])->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])
