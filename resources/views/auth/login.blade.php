@@ -113,16 +113,7 @@
                 </div>
             </form>
 
-            <div class="divider">Información</div>
-
-            <div class="text-center text-sm text-base-content/70">
-                <p class="mb-2">
-                    <strong>Usuario de prueba:</strong> admin
-                </p>
-                <p>
-                    <strong>Contraseña:</strong> admin123
-                </p>
-            </div>
+            {{-- Credenciales de prueba eliminadas por seguridad --}}
         </div>
     </main>
 

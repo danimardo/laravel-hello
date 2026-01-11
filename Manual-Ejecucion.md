@@ -167,7 +167,7 @@ sail artisan db:seed --class=AdminUserSeeder
 | Campo | Valor |
 |-------|-------|
 | Username | `admin` |
-| Password | `Admin123!` |
+| Password | `Admin12345*` |
 
 > ⚠️ **IMPORTANTE:** Cambia la contraseña en tu primer login por seguridad.
 

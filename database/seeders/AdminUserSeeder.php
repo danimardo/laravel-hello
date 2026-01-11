@@ -22,7 +22,7 @@ class AdminUserSeeder extends Seeder
             User::create([
                 'username' => 'admin',
                 'email' => 'admin@example.com',
-                'password' => Hash::make('admin123'), // Default password - should be changed
+                'password' => Hash::make('Admin12345*'), // Default password - should be changed
                 'role' => 'admin',
                 'status' => 'active',
                 'failed_attempts' => 0,
@@ -32,7 +32,7 @@ class AdminUserSeeder extends Seeder
             $this->command->info('Admin user created successfully!');
             $this->command->info('Username: admin');
             $this->command->info('Email: admin@example.com');
-            $this->command->info('Password: admin123');
+            $this->command->info('Password: Admin12345*');
             $this->command->warn('Please change the default password after first login!');
         } else {
             $this->command->info('Admin user already exists!');
