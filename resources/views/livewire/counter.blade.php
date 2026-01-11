@@ -52,7 +52,7 @@
 
                 <!-- Reset Button -->
                 <button
-                    wire:click="reset"
+                    wire:click="resetCounter"
                     class="btn btn-warning btn-lg hover:scale-105 active:scale-95 transition-all duration-200"
                     :class="{ 'btn-disabled opacity-50': $isLoading }"
                     :disabled="$isLoading"

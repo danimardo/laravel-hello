@@ -10,7 +10,7 @@ class Counter extends Component
     public int $counter = 0;
     public bool $isLoading = false;
 
-    protected $listeners = ['resetCounter' => 'reset'];
+    protected $listeners = ['resetCounter' => 'resetCounter'];
 
     public function mount(): void
     {
@@ -58,7 +58,7 @@ class Counter extends Component
     /**
      * Reset the counter to 0.
      */
-    public function reset(): void
+    public function resetCounter(): void
     {
         $this->isLoading = true;
 
