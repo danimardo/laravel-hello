@@ -11,48 +11,46 @@ Route::get('/', function () {
 })->name('home');
 
 // TEMPORARY DEBUG ROUTE - REMOVE AFTER TESTING
-Route::post('/test-login', function (\Illuminate\Http\Request \$request) {
+Route::post('/test-login', function (Illuminate\Http\Request $request) {
     try {
         echo "<h1>DEBUG LOGIN TEST</h1>";
         echo "<pre>";
 
         echo "1. Request received\n";
-        echo "   Username: " . (\$request->input('username') ?? 'N/A') . "\n";
-        echo "   Password: " . (\$request->input('password') ? '***' : 'N/A') . "\n";
-        echo "   CSRF Token: " . (\$request->has('_token') ? 'Present' : 'Missing') . "\n\n";
+        echo "   Username: " . ($request->input('username') ?? 'N/A') . "\n";
+        echo "   Password: " . ($request->input('password') ? '***' : 'N/A') . "\n";
+        echo "   CSRF Token: " . ($request->has('_token') ? 'Present' : 'Missing') . "\n\n";
 
-        \$userRepo = new \App\Repositories\UserRepository();
-        \$authService = new \App\Services\AuthService(\$userRepo);
+        $userRepo = new \App\Repositories\UserRepository();
+        $authService = new \App\Services\AuthService($userRepo);
 
         echo "2. Calling AuthService->login()\n";
-        \$result = \$authService->login([
-            'username' => \$request->input('username'),
-            'password' => \$request->input('password')
+        $result = $authService->login([
+            'username' => $request->input('username'),
+            'password' => $request->input('password')
         ]);
 
         echo "3. Result:\n";
-        print_r(\$result);
+        print_r($result);
 
-        if (\$result['success']) {
-            echo "\n4. SUCCESS! User authenticated: " . \$result['user']->username . "\n";
+        if ($result['success']) {
+            echo "\n4. SUCCESS! User authenticated: " . $result['user']->username . "\n";
             echo "5. Attempting to redirect to /counter\n";
-
-            // Don't actually redirect, just show message
             echo "6. REDIRECT would happen here to: " . route('counter') . "\n";
             echo "\n✅ LOGIN WORKS! The issue is in the controller or middleware.\n";
         } else {
             echo "\n4. FAILED!\n";
-            echo "   Message: " . \$result['message'] . "\n";
+            echo "   Message: " . $result['message'] . "\n";
         }
 
         echo "</pre>";
-    } catch (Exception \$e) {
+    } catch (Exception $e) {
         echo "<h1>ERROR</h1>";
         echo "<pre>";
-        echo "Exception: " . \$e->getMessage() . "\n";
-        echo "File: " . \$e->getFile() . "\n";
-        echo "Line: " . \$e->getLine() . "\n";
-        echo "Stack trace:\n" . \$e->getTraceAsString();
+        echo "Exception: " . $e->getMessage() . "\n";
+        echo "File: " . $e->getFile() . "\n";
+        echo "Line: " . $e->getLine() . "\n";
+        echo "Stack trace:\n" . $e->getTraceAsString();
         echo "</pre>";
     }
 })->name('test-login');
